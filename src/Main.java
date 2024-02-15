@@ -23,7 +23,7 @@ public class Main extends JFrame {
 
     public Main() {
         setTitle("TIC-TAC-TOE");
-        setSize(350, 400); // Increased height to accommodate the score label
+        setSize(350, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
