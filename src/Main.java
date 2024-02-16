@@ -4,8 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main extends JFrame {
-
-    private JButton[][] buttons;
+    private final InputButton[][] iButtons = new InputButton[3][3];
     private JButton resetScore;
     private JButton symbol;
     private String currentXSymbol = "X";
@@ -14,12 +13,11 @@ public class Main extends JFrame {
     private JLabel scoreLabel;
     private int playerXScore;
     private int playerOScore;
-    private Font scoreFont;
-    private Font gameFont;
-    private String[][] symbolList = {
+    private final Font scoreFont;
+    private final String[][] symbolList = {
             {"X", "O"}, {"$", "€"}, {"0", "1"}, {"!", "?"}
     };
-    private int symboln = 0;
+    private int symbolN = 0;
 
     public Main() {
         setTitle("TIC-TAC-TOE");
@@ -27,17 +25,14 @@ public class Main extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        buttons = new JButton[3][3];
         currentPlayer = currentXSymbol;
         playerXScore = 0;
         playerOScore = 0;
         scoreFont = new Font("Arial", Font.BOLD, 15);
-        gameFont = new Font(Font.SANS_SERIF, Font.BOLD, 52);
+        //gameFont = new Font(Font.SANS_SERIF, Font.BOLD, 52);
 
         initializeBoard();
         initializeScoreLabel();
-        //initializeResetButton();
-        //initializeSymbolButton();
         initializeOptionPanel();
     }
 
@@ -47,21 +42,19 @@ public class Main extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 3));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                buttons[row][col] = new JButton("");
-                buttons[row][col].setFont(gameFont);
-                buttons[row][col].setFocusPainted(false);
+                iButtons[row][col] = new InputButton();
 
                 int finalRow = row;
                 int finalCol = col;
 
-                buttons[row][col].addActionListener(new ActionListener() {
+                iButtons[row][col].getInputButton().addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         handleButtonClick(finalRow, finalCol);
                     }
                 });
 
-                buttonPanel.add(buttons[row][col]);
+                buttonPanel.add(iButtons[row][col].getInputButton());
             }
         }
 
@@ -113,10 +106,10 @@ public class Main extends JFrame {
     }
 
     private void handleButtonClick(int row, int col) {
-        if (buttons[row][col].getText().isEmpty()) {
-            if(currentPlayer.equals(currentXSymbol)) buttons[row][col].setForeground(Color.BLUE);
-            else buttons[row][col].setForeground(Color.RED);
-            buttons[row][col].setText(currentPlayer);
+        if (iButtons[row][col].getButtonText().isEmpty()) {
+            if(currentPlayer.equals(currentXSymbol)) iButtons[row][col].getInputButton().setForeground(Color.BLUE);
+            else iButtons[row][col].getInputButton().setForeground(Color.RED);
+            iButtons[row][col].setButtonText(currentPlayer);
 
             if (checkForWin(row, col)) {
                 announceWinner();
@@ -139,10 +132,10 @@ public class Main extends JFrame {
     }
 
     private void symbolButtonClick() {
-        symboln++;
-        if (symboln > symbolList.length - 1) symboln = 0;
-        currentXSymbol = symbolList[symboln][0];
-        currentOSymbol = symbolList[symboln][1];
+        symbolN++;
+        if (symbolN > symbolList.length - 1) symbolN = 0;
+        currentXSymbol = symbolList[symbolN][0];
+        currentOSymbol = symbolList[symbolN][1];
         updateScoreLabel();
         updateSymbolButton();
         resetGame();
@@ -158,15 +151,15 @@ public class Main extends JFrame {
     }
 
     private boolean checkRow(int row) {
-        return buttons[row][0].getText().equals(currentPlayer) &&
-                buttons[row][1].getText().equals(currentPlayer) &&
-                buttons[row][2].getText().equals(currentPlayer);
+        return iButtons[row][0].getButtonText().equals(currentPlayer) &&
+                iButtons[row][1].getButtonText().equals(currentPlayer) &&
+                iButtons[row][2].getButtonText().equals(currentPlayer);
     }
 
     private boolean checkColumn(int col) {
-        return buttons[0][col].getText().equals(currentPlayer) &&
-                buttons[1][col].getText().equals(currentPlayer) &&
-                buttons[2][col].getText().equals(currentPlayer);
+        return iButtons[0][col].getButtonText().equals(currentPlayer) &&
+                iButtons[1][col].getButtonText().equals(currentPlayer) &&
+                iButtons[2][col].getButtonText().equals(currentPlayer);
     }
 
     private boolean checkDiagonals(int row, int col) {
@@ -175,23 +168,24 @@ public class Main extends JFrame {
 
     private boolean checkMainDiagonal(int row, int col) {
         return row == col &&
-                buttons[0][0].getText().equals(currentPlayer) &&
-                buttons[1][1].getText().equals(currentPlayer) &&
-                buttons[2][2].getText().equals(currentPlayer);
+                iButtons[0][0].getButtonText().equals(currentPlayer) &&
+                iButtons[1][1].getButtonText().equals(currentPlayer) &&
+                iButtons[2][2].getButtonText().equals(currentPlayer);
     }
 
     private boolean checkAntiDiagonal(int row, int col) {
         return row + col == 2 &&
-                buttons[0][2].getText().equals(currentPlayer) &&
-                buttons[1][1].getText().equals(currentPlayer) &&
-                buttons[2][0].getText().equals(currentPlayer);
+                iButtons[0][2].getButtonText().equals(currentPlayer) &&
+                iButtons[1][1].getButtonText().equals(currentPlayer) &&
+                iButtons[2][0].getButtonText().equals(currentPlayer);
     }
 
     private boolean isBoardFull() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                if (buttons[row][col].getText().isEmpty()) {
-                    return false;
+//              if (buttons[row][col].getText().isEmpty()) {
+                if (iButtons[row][col].getButtonText().isEmpty()) {
+                        return false;
                 }
             }
         }
@@ -224,7 +218,7 @@ public class Main extends JFrame {
     private void resetGame() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                buttons[row][col].setText("");
+                iButtons[row][col].setButtonText("");
             }
         }
         //currentPlayer = "X";
